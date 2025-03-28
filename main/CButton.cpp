@@ -43,7 +43,7 @@ void CButton::tick(){
 
     int64_t nowTime = esp_timer_get_time();
     if(buttonState == HIGH && doubleClickDetected && ((nowTime - releaseTime) > DOUBLE_CLICK_GAP)) {//ako tipka nije pritinusta i možda se dogodio double click
-            if((releaseTime - pressTime) <  SIGNLE_CLICK) {
+            if((releaseTime - pressTime) <  SIGNLE_CLICK) { //dodatna provjera zbog otpuštanja nakon LONG PRESS
                 if(singleClick) singleClick();
             }
             doubleClickDetected = false;
