@@ -3,8 +3,9 @@
 #ifndef _CButton_h
 #define _CButton_h
 
-#define DOUBLE_CLICK 400000 //400ms
+#define DOUBLE_CLICK_GAP 500000 //500ms
 #define LONG_PRESS 1000000 //1s
+#define SIGNLE_CLICK 1000000 //1s
 
 #define LOW 0
 #define HIGH 1
@@ -41,10 +42,9 @@ class CButton{
         gpio_num_t m_pinNumber; //GPIO pin na koji je spojen button
         bool lastButtonState = HIGH; //posljednje stanje button-a: inicijalno HIGH zbog ugrađenog pull-up otpornika
         int64_t pressTime = 0; //vrijeme kada je tipka pritisnuta
-        int64_t lastPressTime = 0; //vrijeme kada je tipka pritisnuta zadnji put
-        int64_t releaseTime = 0; //vrijeme kada je tipka puštena
+        int64_t releaseTime = 0; //vrijeme kada je tipka otpuštena
         bool longPressDetected = false; //dogodio se long press
-        bool doubleClickDetected = false;
+        bool doubleClickDetected = false; //dogodio se double click
 
         ButtonEventHandler singleClick = NULL; //pokazivač na dodijeljenu funkciju oblika void functionName(void)
         ButtonEventHandler doubleClick = NULL; //pokazivač na dodijeljenu funkciju oblika void functionName(void)

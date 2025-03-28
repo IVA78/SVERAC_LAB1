@@ -24,35 +24,38 @@ void CButton::tick(){
     if (buttonState == LOW && lastButtonState == HIGH) { // ako je button trenutno LOW, a prije toga je bio HIGH, znači da je pritisnut (pull-up otpornik)
         pressTime = esp_timer_get_time(); // bilježenje vremena u kojem je pritisnut button
         longPressDetected = false; //nisam još detekirala LONG PRESS jer je gumb nanovo pritisnut
-        
-        if((pressTime - lastPressTime) < DOUBLE_CLICK) { //detekcija DOUBLE CLICK-a
-            doubleClickDetected = true;
-            if (doubleClick) doubleClick();
-        }
-
-        lastPressTime = pressTime;
+   
     }
 
-    //ako je tipka još pritisnuta, provjeravam je li u pitanju LONG PRESS
-    if(buttonState == LOW && !longPressDetected) { 
-        int64_t nowTime = esp_timer_get_time();
-        if((nowTime - pressTime) > LONG_PRESS) {
-            longPressDetected = true;
-            if (longPress) longPress();
-        }
-
-    }
-
-    
-    // detekcija otpuštanja buttona - RESET
+    // detekcija otpuštanja buttona
     if (buttonState == HIGH && lastButtonState == LOW) { // ako je button trenutno HIGH, a prije toga je bio u LOW, znači da je button otpušten
-        if (!longPressDetected && !doubleClickDetected) { //detekcija SINGLE CLICK-a
-            if(singleClick) singleClick(); 
+        releaseTime = esp_timer_get_time(); //vrijeme otpuštanja buttona
+
+        if(doubleClickDetected) {
+            if(doubleClick) doubleClick();
+            doubleClickDetected = false;
+        } else {
+            doubleClickDetected = true;
+            longPressDetected = false;
         }
 
-        longPressDetected = false;
-        doubleClickDetected = false;
     }
+
+    int64_t nowTime = esp_timer_get_time();
+    if(buttonState == HIGH && doubleClickDetected && ((nowTime - releaseTime) > DOUBLE_CLICK_GAP)) {//ako tipka nije pritinusta i možda se dogodio double click
+            if((releaseTime - pressTime) <  SIGNLE_CLICK) {
+                if(singleClick) singleClick();
+            }
+            doubleClickDetected = false;
+            
+    } else if(buttonState == LOW && !longPressDetected && ((nowTime - pressTime) > LONG_PRESS)) { //ako je tipka još pritisnuta, provjeravam je li u pitanju LONG PRESS
+            if (longPress) longPress();
+             longPressDetected = true;
+             doubleClickDetected = false;
+    
+     }
 
     lastButtonState = buttonState; // Ažuriranje stanja tipke
 }
+
+
