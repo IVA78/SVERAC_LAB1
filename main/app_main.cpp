@@ -83,7 +83,6 @@ TaskHandle_t xHandle = NULL; //TaskHandle_t je tip podataka u FreeRTOS-u koji pr
                              //TaskHandle_t definiran je u FreeRTOS headeru i koristi se kada trebaš stvoriti, pauzirati, brisati ili mijenjati prioritet zadatka.
 
 
-
 //ESP32 mian function
 extern "C" void app_main(void)
 {
@@ -114,20 +113,6 @@ extern "C" void app_main(void)
         1 → Prioritet zadatka (veća vrijednost = veći prioritet).
         &xHandle → Spremanje Task Handle-a za kasnije upravljanje.
     */
-    
-        /*
-            //Main loop
-    while(1) {
-        led1.setLedState(LedStatus::BLINK);
-        vTaskDelay(10000 / portTICK_PERIOD_MS); //10000ms -> 10s
-
-        led1.setLedState(LedStatus::FAST_BLINK);
-        vTaskDelay(10000 / portTICK_PERIOD_MS);
-
-        led1.setLedState(LedStatus::SLOW_BLINK);
-        vTaskDelay(10000 / portTICK_PERIOD_MS);
-    }
-        */
 
     //povezivanje callback funkcija za button
     CButton button1(BUTTON_GPIO);
@@ -144,8 +129,17 @@ extern "C" void app_main(void)
                 &xHandle);      //task handler 
     ESP_LOGI(TAG, "Button Task Created.");
 
+
+    //Main loop
     while(1) {
-        
-    }
+        led1.setLedState(LedStatus::BLINK);
+        vTaskDelay(10000 / portTICK_PERIOD_MS); //10000ms -> 10s
+
+        led1.setLedState(LedStatus::FAST_BLINK);
+        vTaskDelay(10000 / portTICK_PERIOD_MS);
+
+        led1.setLedState(LedStatus::SLOW_BLINK);
+        vTaskDelay(10000 / portTICK_PERIOD_MS);
+    }  
 
 }
